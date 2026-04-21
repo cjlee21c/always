@@ -11,9 +11,14 @@ function Stars({ rating }) {
 }
 
 export default function App() {
+  //async
+  //useState stores this certain data so that it can remember the data even when it rerenders
   const [summary, setSummary] = useState(null);
   const [reviews, setReviews] = useState([]);
 
+  //This runs only when you load the page for the first time
+  //this would get (fetching) us the summary and review data that we worked on backend part. 
+  //you put that data into useState part
   useEffect(() => {
     const API = import.meta.env.VITE_API_URL || "";
     fetch(`${API}/summary`).then((r) => r.json()).then(setSummary);

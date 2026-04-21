@@ -11,8 +11,10 @@ app.use(express.json());
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+//you get the all the review data from reviews.json
 function loadReviews() {
   const filePath = path.join(__dirname, "reviews.json");
+  //fs module gets you to read the data from reviews.json
   const raw = fs.readFileSync(filePath, "utf-8");
   return JSON.parse(raw);
 }
@@ -26,7 +28,7 @@ app.post("/ask", async (req, res) => {
   const reviewText = reviews
     .map((r, i) => `[${i + 1}] 별점: ${r.rating}점 | ${r.date}\n${r.title ? r.title + "\n" : ""}${r.content}`)
     .join("\n\n");
-
+  //This is promt for ChatGPT and you need to make sure it should answer based on actual data, not hallucination
   const prompt = `당신은 쇼핑 리뷰 분석 AI입니다. 아래는 "건조분쇄 필터 음식물 처리기 가정용" 제품의 실제 구매 후기입니다.
 
 반드시 아래 규칙을 따르세요:
@@ -52,6 +54,8 @@ ${reviewText}
 
     const answer = completion.choices[0].message.content;
     res.json({ answer });
+
+    //you need this to make sure you got the error in regards to openAI api hosting
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "AI 응답 중 오류가 발생했습니다." });
@@ -63,6 +67,7 @@ app.get("/summary", (req, res) => {
   const reviews = loadReviews();
   const total = reviews.length;
 
+  //calculating the count of reviews that are postivie, negative, and neutral so that you can provide users the percentage. 
   const positive = reviews.filter((r) => Number(r.rating) >= 4).length;
   const neutral = reviews.filter((r) => Number(r.rating) === 3).length;
   const negative = reviews.filter((r) => Number(r.rating) <= 2).length;
