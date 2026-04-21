@@ -1,0 +1,12 @@
+{
+  "name": "always-crawler",
+  "version": "1.0.0",
+  "scripts": {
+    "crawl": "node crawl.js"
+  },
+  "dependencies": {
+    "puppeteer": "^22.0.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}
